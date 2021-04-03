@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cuit.homeiot.mapper.DataMapper">
+    <resultMap id="DataRes" type="com.cuit.homeiot.pojo.DataDTO">
+        <result property="payload" column="payload"/>
+        <result property="at" column="at" />
+    </resultMap>
+
+    <select id="selectByClient_idAndAtBetweenTime" resultType="com.cuit.homeiot.pojo.DataDTO" resultMap="DataRes">
+        SELECT o.payload,o.at
+        FROM on_client_publish as o
+        WHERE client_id = #{client_id}
+        AND TO_DAYS(SYSDATE())-TO_DAYS(o.at) &lt;= 1
+    </select>
+</mapper>

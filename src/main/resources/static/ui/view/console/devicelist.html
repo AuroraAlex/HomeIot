@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="../../component/pear/css/pear.css" />
+	</head>
+	<body class="pear-container">
+		
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="device-table" lay-filter="device-table"></table>
+			</div>
+		</div>
+
+		<script type="text/html" id="device-toolbar">
+			
+		<button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
+			<i class="layui-icon layui-icon-delete"></i>
+			删除
+		</button>
+	</script>
+
+		<script type="text/html" id="device-bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+		<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+	</script>
+	
+	
+
+
+
+
+	<script type="text/html" id="device-status">
+		{{#if (d.isConnected ) { }}
+		<span><div id="status" style="margin-top: 5px; width:20px;height:20px;border-radius:50%;background-color:lightgreen;"></div></span>
+		{{# }else { }}
+		<span><div id="status" style="margin-top: 5px; width:20px;height:20px;border-radius:50%;background-color:red;"></div></span>
+		{{# } }}
+		
+	</script>
+
+
+	<div style="display: none;">
+		<div class="layer-top">
+			<br />
+			<h3>上侧弹层内容...</h3>
+		</div>
+	</div>
+
+		<script src="../../component/layui/layui.js"></script>
+		<script src="../../component/pear/pear.js"></script>
+		<script>
+			layui.use(['table', 'form', 'jquery', 'drawer', 'dropdown'], function() {
+				let table = layui.table;
+				let form = layui.form;
+				let $ = layui.jquery;
+				let drawer = layui.drawer;
+				let dropdown = layui.dropdown;
+
+				let MODULE_PATH = "/view/console/";
+
+				let cols = [
+					[{
+							type: 'checkbox'
+						},
+						{
+							title: '设备ID',
+							field: 'did',
+							align: 'center',
+							width: 100
+						},
+						{
+							title: '设备类型',
+							field: 'type',
+							align: 'center'
+						},
+						{
+							title: '通信方式',
+							field: 'comm',
+							align: 'center',
+							width: 80,
+						},
+						{
+							title: '名称',
+							field: 'name',
+							align: 'center'
+						},
+						{
+							title: '状态',
+							field: 'isConnected',
+							align: 'center',
+							templet: '#device-status'
+						},
+						{
+							title: '操作',
+							toolbar: '#device-bar',
+							align: 'left',
+							width: 170
+						}
+					]
+				]
+				
+
+				table.render({
+					elem: '#device-table',
+					url: '/getAllList',
+					page: true,
+					cols: cols,
+					skin: 'line',
+					 parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+						var result;
+						console.log(this);
+						console.log(JSON.stringify(res));
+						if (this.page.curr) {
+							result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+						}
+						else {
+							result = res.data.slice(0, this.limit);
+						}
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.count, //解析数据长度
+							"data": result //解析数据列表
+						}
+					},
+					toolbar: '#device-toolbar',
+					defaultToolbar: [{
+						layEvent: 'refresh',
+						icon: 'layui-icon-refresh',
+					}, 'filter', 'print', 'exports'],
+					done: function(res) {
+						
+					}
+				});
+
+				table.on('tool(device-table)', function(obj) {
+					if (obj.event === 'remove') {
+						window.remove(obj);
+						
+					} else if (obj.event === 'edit') {
+						window.edit(obj);
+					} else if (obj.event === "progress") {
+						layer.msg(obj.event);
+					} else if (obj.event === "resolve") {
+						layer.msg(obj.event);
+					} else if (obj.event === "reopen") {
+						layer.msg(obj.event);
+					} else if (obj.event === "close") {
+						layer.msg(obj.event);
+					}
+				});
+
+				table.on('toolbar(device-table)', function(obj) {
+					if (obj.event === 'add') {
+						window.add();
+					} else if (obj.event === 'refresh') {
+						window.refresh();
+					} else if (obj.event === 'batchRemove') {
+						window.batchRemove(obj);
+					}
+				});
+
+
+				window.add = function() {
+					drawer.open({
+						direction: "top",
+						dom: ".layer-top",
+						distance: "30%"
+					});
+				}
+
+				window.edit = function(obj) {
+					console.log(obj.data['did']);
+					location.href =  "../echarts/lineCard.html?did=" + obj.data['did'];
+					// layer.open({
+					//   type: 2,
+					//   title: false,
+					//   area: ['1500px', '1000px'],
+					//   closeBtn: 0,
+					//   shadeClose: true,
+					//   skin: 'yourClass',
+					//   content: "../echarts/lineCard.html?did="+obj.data['did']
+					// });
+				}
+
+				window.remove = function(obj) {
+					layer.confirm('确定要删除该用户', {
+						icon: 3,
+						title: '提示'
+					}, function(index) {
+						layer.close(index);
+						let loading = layer.load();
+						$.ajax({
+							url: "/delDevice?did=" + obj.data['did'],
+							dataType: 'json',
+							type: 'delete',
+							success: function(result) {
+								layer.close(loading);
+								if (result.success) {
+									layer.msg(result.msg, {
+										icon: 1,
+										time: 1000
+									}, function() {
+										obj.del();
+									});
+								} else {
+									layer.msg(result.msg, {
+										icon: 2,
+										time: 1000
+									});
+								}
+							}
+						})
+					});
+				}
+
+				window.batchRemove = function(obj) {
+					let data = table.checkStatus(obj.config.id).data;
+					if (data.length === 0) {
+						layer.msg("未选中数据", {
+							icon: 3,
+							time: 1000
+						});
+						return false;
+					}
+					let ids = "";
+					for (let i = 0; i < data.length; i++) {
+						ids += data[i].did + ",";
+					}
+					ids = ids.substr(0, ids.length - 1);
+					layer.confirm('确定要删除这些用户', {
+						icon: 3,
+						title: '提示'
+					}, function(index) {
+						layer.close(index);
+						let loading = layer.load();
+						console.log(ids);
+						$.ajax({
+							url: "/batchRemove?dids=" + ids,
+							dataType: 'json',
+							type: 'delete',
+							success: function(result) {
+								layer.close(loading);
+								if (result.success) {
+									layer.msg(result.msg, {
+										icon: 1,
+										time: 1000
+									}, function() {
+										table.reload('device-table');
+									});
+								} else {
+									layer.msg(result.msg, {
+										icon: 2,
+										time: 1000
+									});
+								}
+							}
+						})
+					});
+				}
+
+				window.refresh = function(param) {
+					table.reload('device-table');
+				}
+			})
+		</script>
+	</body>
+</html>

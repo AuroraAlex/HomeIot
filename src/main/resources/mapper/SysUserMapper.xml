@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cuit.homeiot.mapper.SysUserMapper">
+    <resultMap id="userRoles" type="com.cuit.homeiot.pojo.SysUser">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <collection property="roles" ofType="com.cuit.homeiot.pojo.SysRole">
+            <id  property="id" column="id"/>
+            <result  property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="findByUserName" resultType="com.cuit.homeiot.pojo.SysUser" resultMap="userRoles">
+        select u.*,r.*
+        from Sys_User u
+        LEFT JOIN sys_role_user sru on u.id = sru.Sys_User_Id
+        LEFT JOIN Sys_Role r on sru.Sys_Role_Id = r.id
+        WHERE username = #{username}
+    </select>
+</mapper>

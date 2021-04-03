@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cuit.homeiot.mapper.SwitchMapper">
+    <resultMap id="SwitchRes" type="com.cuit.homeiot.pojo.Switch">
+        <result property="did" column="did"/>
+        <result property="keys" column="key" />
+    </resultMap>
+
+    <select id="getKeyByDid" resultType="com.cuit.homeiot.pojo.Switch" resultMap="SwitchRes">
+        SELECT D.did,D.`key`
+        FROM Device_List AS D
+        WHERE did=#{did}
+    </select>
+</mapper>
