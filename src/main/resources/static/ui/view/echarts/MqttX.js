@@ -17,7 +17,7 @@ var flag = false;
 // mqtts 加密 TCP 连接
 // wxs 微信小程序连接
 // alis 支付宝小程序连接
-const connectUrl = 'ws://192.168.220.128:8083/mqtt'
+const connectUrl = 'ws://192.168.1.131:8083/mqtt'
 const client = mqtt.connect(connectUrl, options)
 
 client.on('reconnect', (error) => {
@@ -29,45 +29,86 @@ client.on('connect', function () {
   console.log("connect success!")
  
 })
-//订阅主题
-client.subscribe(['test','test1','test2'], function (err) {
-if (!err) {
-  console.log("subscribe success!")
-  //发布主题presence,消息内容为Hello mqtt
-}else{
-//打印错误
-  console.log(err)
-}
-})
+
 
 client.on('error', (error) => {
     console.log('连接失败:', error)
 })
 
-client.on('message', (topic, message) => {
-  console.log('收到消息：', topic, message.toString())
-})
 
 function getQueryVariable(variable)
-		{
-			var query = window.location.search.substring(1);
-			var vars = query.split("&");
-			for (var i=0;i<vars.length;i++) {
-				var pair = vars[i].split("=");
-				if(pair[0] == variable){return pair[1];}
-			}
-			return(false);
-		}
+{
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		if(pair[0] == variable){return pair[1];}
+	}
+	return(false);
+}
 		
 var did = getQueryVariable("did");
 
 
 
-layui.use(['popup'],function() {
+layui.use(['form','popup','element'],function() {
 	var $ = layui.$;
 	var popup = layui.popup;
-	var now = document.getElementById('now');
+	var form = layui.form;
+	var element = layui.element;
+	
+	client.on('message', (topic, message) => {
+	  console.log('收到消息：', topic, message.toString())
+	  json = JSON.parse(message.toString());
+	  for(var key in json){
+		  $('#'+key).text(json[key]);
+		  console.log(json[key]);
+	  }
+	  $('#status').css("background-color","lightgreen");
+	})
+	
+	
+	onClick = function (id){
+		console.log(id);
+		var str = '#'+id;
+		$('#status').css("background-color","red");
+		if($(str).text()==='ON'){
+			client.publish('cmd/'+did, '{'+id+':0}');
+		}else{
+			client.publish('cmd/'+did, '{'+id+':1}');
+		}
+		
+		
+		 
+	}
+	
+	
+	
+	function makeSwitch(data,count){
+		var i;
+		for(i=0;i<count;i++){
+			$("#now").append("<label>"+data[i].toString()+"&ensp;&ensp;</label>");
+			$("#now").append("<button class='pear-btn pear-btn-primary pear-btn-sm' onclick=\"onClick('"+data[i].toString()+"')\" id='"+data[i].toString()+"' >OFF</button><br>");
+			$("#now").append("<hr class='layui-border-blue'>");
+		}
+		
+	}
+	
+
+	
 	function init(){
+		
+		//订阅主题
+		client.subscribe(['status/'+did], function (err) {
+		if (!err) {
+		  console.log("subscribe success!")
+		  //发布主题presence,消息内容为Hello mqtt
+		}else{
+		//打印错误
+		  console.log(err)
+		}
+		})
+		
 		$.ajax({
 			url: "/getKeys?did="+did,
 			type: "GET",
@@ -75,7 +116,8 @@ layui.use(['popup'],function() {
 				console.log(data);
 				if(data.msg==="OK")
 				{
-					
+					client.publish('cmd/'+did, '{cmd:1}');
+					makeSwitch(data.data,data.count);
 				}else {
 				   
 				}
@@ -85,12 +127,10 @@ layui.use(['popup'],function() {
 			}
 		});
 		
+		
 	}
 	
 	init();
 	
-	while(true){
-		
-	}
 	
 })

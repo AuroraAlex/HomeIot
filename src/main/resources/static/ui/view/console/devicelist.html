@@ -172,17 +172,14 @@
 				}
 
 				window.edit = function(obj) {
-					console.log(obj.data['did']);
-					location.href =  "../echarts/lineCard.html?did=" + obj.data['did'];
-					// layer.open({
-					//   type: 2,
-					//   title: false,
-					//   area: ['1500px', '1000px'],
-					//   closeBtn: 0,
-					//   shadeClose: true,
-					//   skin: 'yourClass',
-					//   content: "../echarts/lineCard.html?did="+obj.data['did']
-					// });
+					if(obj.data.type === 'SD'){
+						console.log(obj.data['did']);
+						location.href =  "../echarts/mqtt.html?did=" + obj.data['did'];
+					}else if(obj.data.type === 'AD'||obj.data.type === 'DD'){
+						console.log(obj.data['did']);
+						location.href =  "../echarts/lineCard.html?did=" + obj.data['did'];
+					}
+					
 				}
 
 				window.remove = function(obj) {

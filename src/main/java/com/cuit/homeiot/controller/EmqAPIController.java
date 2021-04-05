@@ -2,6 +2,7 @@ package com.cuit.homeiot.controller;
 
 import com.cuit.homeiot.pojo.ApiClients;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,11 +17,14 @@ public class EmqAPIController {
     @Autowired
     RestTemplate restTemplate;
 
+    @Value("${EMQ.URL}")
+    public String url;
+
     @RequestMapping("/isConnected")
     public String isConnected(@RequestParam(name = "DID") String DID){
         Map<String,String> para = new HashMap<>();
         para.put("clientid",DID);
-        ResponseEntity<ApiClients> responseEntity = restTemplate.getForEntity("http://192.168.220.128:8081/api/v4/clients?clientid={clientid}",
+        ResponseEntity<ApiClients> responseEntity = restTemplate.getForEntity(url+"/api/v4/clients?clientid={clientid}",
                 ApiClients.class,para);
 
         System.out.println("获取响应的状态："+responseEntity.getStatusCode());
