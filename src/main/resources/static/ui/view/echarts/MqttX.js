@@ -17,7 +17,7 @@ var flag = false;
 // mqtts 加密 TCP 连接
 // wxs 微信小程序连接
 // alis 支付宝小程序连接
-const connectUrl = 'ws://192.168.1.131:8083/mqtt'
+const connectUrl = 'ws://192.168.43.23:8083/mqtt'
 const client = mqtt.connect(connectUrl, options)
 
 client.on('reconnect', (error) => {
@@ -73,9 +73,9 @@ layui.use(['form','popup','element'],function() {
 		var str = '#'+id;
 		$('#status').css("background-color","red");
 		if($(str).text()==='ON'){
-			client.publish('cmd/'+did, '{'+id+':0}');
+			client.publish('cmd/'+did, '{\"' +id+'\":0}');
 		}else{
-			client.publish('cmd/'+did, '{'+id+':1}');
+			client.publish('cmd/'+did, '{\"'+id+'\":1}');
 		}
 		
 		
@@ -116,7 +116,7 @@ layui.use(['form','popup','element'],function() {
 				console.log(data);
 				if(data.msg==="OK")
 				{
-					client.publish('cmd/'+did, '{cmd:1}');
+					client.publish('cmd/'+did, '\{\"cmd\":1\}');
 					makeSwitch(data.data,data.count);
 				}else {
 				   

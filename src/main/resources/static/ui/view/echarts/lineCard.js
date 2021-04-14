@@ -60,6 +60,22 @@ layui.use(['popup'],function() {
 				}
 			}
 		},
+		dataZoom: [
+		        {
+		            show: true,
+		            realtime: true,
+		            start: 96,
+		            end: 100,
+		            xAxisIndex: [0, 1]
+		        },
+		        {
+		            type: 'inside',
+		            realtime: true,
+		            start: 96,
+		            end: 100,
+		            xAxisIndex: [0, 1]
+		        }
+		],
 	    // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
 	    xAxis: {
 			type: 'category',
@@ -77,7 +93,7 @@ layui.use(['popup'],function() {
 				}
 			},
 			axisLabel: {  
-			   interval:0,  
+			   interval:20,  
 			   rotate:40  
 			}  
 			},
@@ -112,7 +128,9 @@ layui.use(['popup'],function() {
 	    series: []
 	};
 	
-	
+	onClick= function(){
+		location.href =  "../console/devicelist.html";
+	}
 	
 	function setData(data,count){
 		var i;

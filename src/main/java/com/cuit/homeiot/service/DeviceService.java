@@ -54,5 +54,18 @@ public class DeviceService {
         return true;
     }
 
+    public Map<String,Object> getAllTypeNum(){
+        Map<String,Object> map = new HashMap<>(10);
+        Long ADNum =  deviceListMapper.countByTypeLong("AD");
+        Long DDNum =  deviceListMapper.countByTypeLong("DD");
+        Long SDNum =  deviceListMapper.countByTypeLong("SD");
+        Long GWNum =  deviceListMapper.countByTypeLong("GW");
+        map.put("AD",ADNum);
+        map.put("DD",DDNum);
+        map.put("SD",SDNum);
+        map.put("GW",GWNum);
+        return map;
+    }
+
 
 }

@@ -74,6 +74,16 @@ public class DeviceController {
         return map;
     }
 
+    @GetMapping("/getAllTypeDeviceNum")
+    private Map<String,Object> getAllTypeDeviceNum(){
+        Map<String,Object> map = new HashMap<>(10);
+
+        map.put("code","0");
+        map.put("msg","OK");
+        map.put("count",deviceService.getAllTypeNum());
+        return map;
+    }
+
 
 
 }

@@ -30,7 +30,7 @@ public class MyConfig {
 
     @Bean
     public SimpleDateFormat getSimpleDateFormat(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm:ss");
         return sdf;
     }
 

@@ -73,6 +73,10 @@ class HomeiotApplicationTests {
     }
 
     @Test
+    void testType(){
+        System.out.println(deviceService.getAllTypeNum());
+    }
+    @Test
     void testBatchDel(){
 //        System.out.println(deviceService.batchDelDevice(Arrays.asList("111,222".split(","))));
         System.out.println(deviceService.batchDelDevice("111,222"));
@@ -92,5 +96,7 @@ class HomeiotApplicationTests {
     void testSw(){
         System.out.println(switchService.getKeys("a8e1c779b555480f9dc5c9580a6a1e21"));
     }
+
+
 
 }
