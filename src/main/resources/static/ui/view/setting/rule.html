@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="../../component/pear/css/pear.css" />
+	</head>
+	<body class="pear-container">
+		<div class="layui-row layui-col-space10">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<div class="layui-card-body">新增智能化规则</div>
+				</div>
+			</div>
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<div class="layui-card">
+						<div class="layui-card-body" style="padding-top: 40px;">
+							<div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
+								<div carousel-item>
+									<div>
+										<form class="layui-form" action="javascript:void(0);" style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
+											<div class="layui-form-item">
+												<label class="layui-form-label">信息源设备ID:</label>
+												<div class="layui-input-block">
+													<input id="SDID" name="SDID" type="text" class="layui-input" lay-verify="required" />
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">执行器设备ID:</label>
+												<div class="layui-input-block">
+													<input id="TDID" name="TDID" type="text" class="layui-input" lay-verify="required" />
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">执行条件:</label>
+												<div class="layui-input-block">
+													<input id="CON" name="CON" type="text" class="layui-input" lay-verify="required" />
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">执行命令:</label>
+												<div class="layui-input-block">
+													<input id="CMD" name="CMD" type="text" class="layui-input" lay-verify="required" />
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">备注说明:</label>
+												<div class="layui-input-block">
+													<div class="layui-form-mid layui-word-aux">配置文件以’-‘分割填入json文件的key值</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">规则描述:</label>
+												<div class="layui-input-block">
+													<textarea name="DES" value="" class="layui-textarea" lay-verify="required" ></textarea>
+												</div>
+											</div>
+				
+											<div class="layui-form-item">
+												<div class="layui-input-block" align="center">
+													<button class="pear-btn pear-btn-success" lay-submit lay-filter="formStep">
+														&emsp;下一步&emsp;
+													</button>
+												</div>
+											</div>
+										</form>
+									</div>
+									
+									<div>
+										<div style="text-align: center;margin-top: 90px;">
+											<i class="layui-icon layui-circle" style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
+											<div style="font-size: 24px;color: #333;font-weight: 500;margin-top: 30px;">
+												智能化规则创建成功
+											</div>
+											<div style="font-size: 14px;color: #666;margin-top: 20px;">请返回列表查看</div>
+											<div style="text-align: center;margin-top: 50px;">
+												<button id="back" class="pear-btn pear-btn-success" >返回列表</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<script src="../../component/layui/layui.js"></script>
+		<script src="../../component/pear/pear.js"></script>
+		<script>
+
+			
+			layui.use(['form', 'step','code','element'], function() {
+				var $ = layui.$,
+					form = layui.form,
+					step = layui.step;
+				layui.code();
+				step.render({
+					elem: '#stepForm',
+					filter: 'stepForm',
+					width: '100%',
+					stepWidth: '300px',
+					height: '700px',
+					stepItems: [{
+						title: '创建智能化规则'
+					}, {
+						title: '完成'
+					}]
+				});
+
+				form.on('submit(formStep)', function(data) {
+					layer.msg(JSON.stringify(data.field));
+					console.log(data.field);
+					$.ajax({
+					    url: "/addRule",
+					    type: "POST",
+					    data:{"SDID":data.field.SDID,
+					          "TDID":data.field.TDID,
+							  "CON":data.field.CON,
+							  "CMD":data.field.CMD,
+							  "DES":data.field.DES.toString()
+							 },
+					    success: function(data){
+					        console.log(data);
+					        if(data.msg==="OK")
+					        {
+								step.next('#stepForm');
+					
+					        }else {
+					           
+					        }
+					    },
+						error:function (data) {
+						    console.log(data);
+						}
+					});
+					
+					return false;
+				});
+
+				form.on('submit(formStep2)', function(data) {
+					
+					step.next('#stepForm');
+					return false;
+				});
+
+				$('.next').click(function() {
+					step.next('#stepForm');
+				    return false;
+				});
+				
+				$('#back').click(function() {
+					location.href =  "../console/devicelist.html"
+				    return false;
+				});
+			})
+		</script>
+	</body>
+</html>
