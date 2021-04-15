@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cuit.homeiot.mapper.RuleListMapper">
 
+    <delete id="deleteByRid">
+        DELETE FROM Rule_List AS R
+        WHERE R.rid = #{rid}
+    </delete>
 </mapper>

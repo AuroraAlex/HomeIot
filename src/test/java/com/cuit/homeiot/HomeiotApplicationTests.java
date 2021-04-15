@@ -116,5 +116,9 @@ class HomeiotApplicationTests {
                 "{\"SW\":0}",
                 "MQ2=0","测试可燃气"));
     }
+    @Test
+    void testDelR(){
+        ruleService.delRule("rule:e0851535");
+    }
 
 }

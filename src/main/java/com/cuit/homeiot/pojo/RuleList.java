@@ -16,5 +16,6 @@ public class RuleList {
     private Long id;
     private String tdid;
     private String sdid;
+    private String rid;
     private String des;
 }
