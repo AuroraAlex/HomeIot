@@ -6,6 +6,7 @@ import com.cuit.homeiot.pojo.ApiClients;
 import com.cuit.homeiot.pojo.Switch;
 import com.cuit.homeiot.service.DataService;
 import com.cuit.homeiot.service.DeviceService;
+import com.cuit.homeiot.service.RuleService;
 import com.cuit.homeiot.service.SwitchService;
 import com.cuit.homeiot.utils.HttpApiUtil;
 import org.junit.jupiter.api.Test;
@@ -97,6 +98,23 @@ class HomeiotApplicationTests {
         System.out.println(switchService.getKeys("a8e1c779b555480f9dc5c9580a6a1e21"));
     }
 
+    @Autowired
+    RuleService ruleService;
 
+    @Test
+    void testAdd(){
+        System.out.println(ruleService.addRule("da8880a8194245a6b6aefc57b804bd09",
+                "435c758a0ec34bb89bb145b1fe3e7405",
+                "{\"SW\":1}",
+                "MQ2=1","测试可燃气"));
+    }
+
+    @Test
+    void testAdd2(){
+        System.out.println(ruleService.addRule("da8880a8194245a6b6aefc57b804bd09",
+                "435c758a0ec34bb89bb145b1fe3e7405",
+                "{\"SW\":0}",
+                "MQ2=0","测试可燃气"));
+    }
 
 }
